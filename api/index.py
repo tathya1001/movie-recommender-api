@@ -12,8 +12,8 @@ app = Flask(__name__)
 
 CORS(app)
 
-model = pickle.load(open('./movies.pkl', 'rb'))
-similarity = pickle.load(open('./similarity.pkl', 'rb'))
+model = pickle.load(open('movies.pkl', 'rb'))
+similarity = pickle.load(open('similarity.pkl', 'rb'))
 similarity_list = similarity.tolist()
 
 TMDB_API_KEY = os.getenv('TMDB_API_KEY')
