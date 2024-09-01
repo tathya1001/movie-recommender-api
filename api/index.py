@@ -12,9 +12,8 @@ app = Flask(__name__)
 
 CORS(app)
 
-model = pickle.load(open('movies.pkl', 'rb'))
-similarity = pickle.load(open('similarity.pkl', 'rb'))
-similarity_list = similarity.tolist()
+# Load the reduced data
+reduced_data = pickle.load(open('reduced_movies.pkl', 'rb'))
 
 TMDB_API_KEY = os.getenv('TMDB_API_KEY')
 
@@ -32,19 +31,18 @@ def home():
 
 @app.route("/recommend/<string:movie>")
 def predict(movie):
-    try:
-        movie_index = model[model['title'].str.lower() == movie.lower()].index[0]
-    except IndexError:
+    # Fetch movie data from the reduced dataset
+    movie_data = reduced_data.get(movie.title())
+
+    # Check if the movie exists in the dataset
+    if not movie_data:
         return abort(404, description="Movie not found")
 
-    distances = similarity_list[movie_index]
-    movies_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[0:11]
-    
+    # Extract the recommended movies
     recommended_movies_posters = []
     
-    for i in movies_list:
-        movie_id = int(model.iloc[i[0]]['movie_id'])
-        poster_url = get_poster_path(movie_id, '18801745663fe6b9442bb058ce026e76')
+    for recommended_movie in movie_data['recommendations']:
+        poster_url = get_poster_path(recommended_movie['movie_id'], TMDB_API_KEY)
         if poster_url:
             recommended_movies_posters.append(poster_url)
     
