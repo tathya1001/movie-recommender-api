@@ -17,7 +17,7 @@ reduced_data = pickle.load(open('reduced_movies.pkl', 'rb'))
 TMDB_API_KEY = os.getenv('TMDB_API_KEY')
 
 def get_poster_path(movie_id, api_key):
-    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={api_key}"
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=18801745663fe6b9442bb058ce026e76"
     response = requests.get(url).json()
     poster_path = response.get('poster_path')
     if poster_path:
