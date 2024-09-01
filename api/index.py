@@ -25,11 +25,7 @@ def get_poster_path(movie_id, api_key):
         return f"https://image.tmdb.org/t/p/w500{poster_path}"
     return None
 
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-@app.route("/recommend/<string:movie>")
+@app.route("/<string:movie>")
 def predict(movie):
     # Fetch movie data from the reduced dataset
     movie_data = reduced_data.get(movie.title())
