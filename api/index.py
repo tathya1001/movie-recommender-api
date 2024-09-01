@@ -12,7 +12,6 @@ app = Flask(__name__)
 
 CORS(app)
 
-# Load the reduced data
 reduced_data = pickle.load(open('reduced_movies.pkl', 'rb'))
 
 TMDB_API_KEY = os.getenv('TMDB_API_KEY')
@@ -25,16 +24,17 @@ def get_poster_path(movie_id, api_key):
         return f"https://image.tmdb.org/t/p/w500{poster_path}"
     return None
 
-@app.route("/<string:movie>")
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/recommend/<string:movie>")
 def predict(movie):
-    # Fetch movie data from the reduced dataset
     movie_data = reduced_data.get(movie.title())
 
-    # Check if the movie exists in the dataset
     if not movie_data:
         return abort(404, description="Movie not found")
 
-    # Extract the recommended movies
     recommended_movies_posters = []
     
     for recommended_movie in movie_data['recommendations']:
